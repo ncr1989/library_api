@@ -2,7 +2,6 @@ package com.cs2i.libraryapi.controller;
 
 
 import com.cs2i.libraryapi.entity.Livre;
-import com.cs2i.libraryapi.repository.livreService;
 import com.cs2i.libraryapi.service.LivreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,6 +34,6 @@ public class LivreController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        livreService.deleteById(id);
+        livreService.delete(id);
     }
 }

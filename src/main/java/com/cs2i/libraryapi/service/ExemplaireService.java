@@ -35,7 +35,6 @@ public class ExemplaireService implements CrudService<Exemplaire, Long> {
     @Override
     public Exemplaire update(Long id, Exemplaire entity) {
         Exemplaire exemplaire = findById(id);
-        exemplaire.setEtat(entity.getEtat());
         exemplaire.setDisponible(entity.isDisponible());
         exemplaire.setOuvrage(entity.getOuvrage());
         return exemplaireRepository.save(exemplaire);

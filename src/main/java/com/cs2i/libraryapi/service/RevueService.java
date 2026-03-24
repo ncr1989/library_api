@@ -41,7 +41,7 @@ public class RevueService implements CrudService<Revue, Long> {
         revue.setAuteurs(entity.getAuteurs());
         revue.setThemes(entity.getThemes());
         revue.setExemplaires(entity.getExemplaires());
-        revue.setNumero(entity.getNumero());
+        revue.setNumeroVolume(entity.getNumeroVolume());
         return revueRepository.save(revue);
     }
 

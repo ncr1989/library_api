@@ -17,6 +17,7 @@ public class Exemplaire {
     private Long id;
 
     private int codeBarre;
+    private boolean disponible;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "emplacement_id")

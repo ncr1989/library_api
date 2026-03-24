@@ -38,9 +38,7 @@ public class EtudiantService implements CrudService<Etudiant, Long> {
         etudiant.setNom(entity.getNom());
         etudiant.setPrenom(entity.getPrenom());
         etudiant.setEmail(entity.getEmail());
-        etudiant.setMotDePasse(entity.getMotDePasse());
-        etudiant.setFiliere(entity.getFiliere());
-        etudiant.setNiveau(entity.getNiveau());
+        etudiant.setPassword(entity.getPassword());
         return etudiantRepository.save(etudiant);
     }
 

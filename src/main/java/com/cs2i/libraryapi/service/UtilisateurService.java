@@ -52,4 +52,8 @@ public class UtilisateurService implements CrudService<Utilisateur, Long> {
     public Utilisateur findByEmail(String email) {
         return utilisateurRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
     }
+
+    public boolean existsById(Long id) {
+        return utilisateurRepository.existsById(id);
+    }
 }

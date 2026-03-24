@@ -38,8 +38,7 @@ public class EnseignantService implements CrudService<Enseignant, Long> {
         enseignant.setNom(entity.getNom());
         enseignant.setPrenom(entity.getPrenom());
         enseignant.setEmail(entity.getEmail());
-        enseignant.setMotDePasse(entity.getMotDePasse());
-        enseignant.setGrade(entity.getGrade());
+        enseignant.setPassword(entity.getPassword());
         return enseignantRepository.save(enseignant);
     }
 

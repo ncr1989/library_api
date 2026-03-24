@@ -43,7 +43,7 @@ public class UtilisateurController {
         if (!utilisateurService.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé");
         }
-        utilisateurService.deleteById(id);
+        utilisateurService.delete(id);
     }
 }
 

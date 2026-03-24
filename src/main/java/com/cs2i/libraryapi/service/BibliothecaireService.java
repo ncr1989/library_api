@@ -38,7 +38,7 @@ public class BibliothecaireService implements CrudService<Bibliothecaire, Long> 
         bibliothecaire.setNom(entity.getNom());
         bibliothecaire.setPrenom(entity.getPrenom());
         bibliothecaire.setEmail(entity.getEmail());
-        bibliothecaire.setMotDePasse(entity.getMotDePasse());
+        bibliothecaire.setPassword(entity.getPassword());
         bibliothecaire.setAdresse(entity.getAdresse());
         return bibliothecaireRepository.save(bibliothecaire);
     }
