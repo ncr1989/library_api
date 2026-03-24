@@ -35,6 +35,11 @@ public class EmpruntController {
         return empruntService.findByUtilisateurId(userId);
     }
 
+    @PostMapping("/{id}/retour")
+    public Emprunt retour(@PathVariable Long id) {
+        return empruntService.retour(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Emprunt create(@RequestBody Emprunt emprunt) {

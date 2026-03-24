@@ -1,6 +1,7 @@
 package com.cs2i.libraryapi.service;
 
 import com.cs2i.libraryapi.entity.Emprunt;
+import com.cs2i.libraryapi.entity.Exemplaire;
 import com.cs2i.libraryapi.repository.EmpruntRepository;
 import com.cs2i.libraryapi.service.observateur.EmpruntEnRetardEvenement;
 import com.cs2i.libraryapi.service.observateur.NotificateurRetardEmprunt;
@@ -46,6 +47,25 @@ public class EmpruntService implements CrudService<Emprunt, Long> {
         emprunt.setDateRetourEffective(entity.getDateRetourEffective());
         emprunt.setUtilisateur(entity.getUtilisateur());
         emprunt.setExemplaire(entity.getExemplaire());
+
+        Emprunt sauvegarde = empruntRepository.save(emprunt);
+        verifierRetard(sauvegarde);
+        return sauvegarde;
+    }
+
+    public Emprunt retour(Long empruntId) {
+        Emprunt emprunt = findById(empruntId);
+
+        if (emprunt.getDateRetourEffective() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cet emprunt est déjà retourné");
+        }
+
+        emprunt.setDateRetourEffective(LocalDate.now());
+
+        Exemplaire exemplaire = emprunt.getExemplaire();
+        if (exemplaire != null) {
+            exemplaire.setDisponible(true);
+        }
 
         Emprunt sauvegarde = empruntRepository.save(emprunt);
         verifierRetard(sauvegarde);
