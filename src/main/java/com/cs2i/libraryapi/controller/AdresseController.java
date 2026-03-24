@@ -1,0 +1,49 @@
+package com.cs2i.libraryapi.controller;
+
+import com.cs2i.libraryapi.entity.Adresse;
+
+import com.cs2i.libraryapi.service.AdresseService;
+import com.cs2i.libraryapi.service.CategorieService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/Adresses")
+@RequiredArgsConstructor
+public class AdresseController {
+
+    private final AdresseService adresseService;
+    private final CategorieService categorieService;
+
+    @GetMapping
+    public List<Adresse> getAll() {
+        return adresseService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Adresse getById(@PathVariable Long id) {
+        return adresseService.findById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Adresse create(@RequestBody @Valid Adresse adresse) {
+        return adresseService.create(adresse);
+    }
+
+    @PutMapping("/{id}")
+    public Adresse update(@PathVariable Long id, @RequestBody Adresse updated) {
+        return adresseService.update(id, updated);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        adresseService.delete(id);
+    }
+}

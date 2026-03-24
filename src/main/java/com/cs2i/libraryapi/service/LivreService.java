@@ -1,0 +1,60 @@
+package com.cs2i.libraryapi.service;
+
+import com.cs2i.libraryapi.entity.Livre;
+import com.cs2i.libraryapi.repository.LivreRepository;
+import com.cs2i.libraryapi.service.CrudService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class LivreService implements CrudService<Livre, Long> {
+
+    private final LivreRepository livreRepository;
+
+    @Override
+    public List<Livre> findAll() {
+        return livreRepository.findAll();
+    }
+
+    @Override
+    public Livre findById(Long id) {
+        return livreRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Livre non trouvé"));
+    }
+
+    @Override
+    public Livre create(Livre entity) {
+        return livreRepository.save(entity);
+    }
+
+    @Override
+    public Livre update(Long id, Livre entity) {
+        Livre livre = findById(id);
+        livre.setTitre(entity.getTitre());
+        livre.setCaution(entity.getCaution());
+        livre.setAnneePublication(entity.getAnneePublication());
+        livre.setAuteurs(entity.getAuteurs());
+        livre.setThemes(entity.getThemes());
+        livre.setExemplaires(entity.getExemplaires());
+        livre.setIsbn(entity.getIsbn());
+        return livreRepository.save(livre);
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (!livreRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livre non trouvé");
+        }
+        livreRepository.deleteById(id);
+    }
+
+    public List<Livre> findByTitreContainingIgnoreCase(String titre) {
+
+        return List.of();
+    }
+}
