@@ -5,6 +5,7 @@ import com.cs2i.libraryapi.repository.EnseignantRepository;
 import com.cs2i.libraryapi.service.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class EnseignantService implements CrudService<Enseignant, Long> {
 
     private final EnseignantRepository enseignantRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<Enseignant> findAll() {
@@ -38,7 +40,7 @@ public class EnseignantService implements CrudService<Enseignant, Long> {
         enseignant.setNom(entity.getNom());
         enseignant.setPrenom(entity.getPrenom());
         enseignant.setEmail(entity.getEmail());
-        enseignant.setPassword(entity.getPassword());
+        enseignant.setPassword(passwordEncoder.encode(entity.getPassword()));
         return enseignantRepository.save(enseignant);
     }
 

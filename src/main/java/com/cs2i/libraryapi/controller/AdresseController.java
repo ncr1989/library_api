@@ -1,24 +1,20 @@
 package com.cs2i.libraryapi.controller;
 
 import com.cs2i.libraryapi.entity.Adresse;
-
 import com.cs2i.libraryapi.service.AdresseService;
-import com.cs2i.libraryapi.service.CategorieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Adresses")
+@RequestMapping("/api/adresses")
 @RequiredArgsConstructor
 public class AdresseController {
 
-    private final AdresseService adresseService;
-    private final CategorieService categorieService;
+    private final AdresseService adresseService; // removed CategorieService
 
     @GetMapping
     public List<Adresse> getAll() {

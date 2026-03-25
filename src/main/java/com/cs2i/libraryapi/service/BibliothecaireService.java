@@ -5,6 +5,7 @@ import com.cs2i.libraryapi.repository.BibliothecaireRepository;
 import com.cs2i.libraryapi.service.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class BibliothecaireService implements CrudService<Bibliothecaire, Long> {
 
     private final BibliothecaireRepository bibliothecaireRepository;
-
+    private final PasswordEncoder passwordEncoder;
     @Override
     public List<Bibliothecaire> findAll() {
         return bibliothecaireRepository.findAll();
@@ -38,7 +39,7 @@ public class BibliothecaireService implements CrudService<Bibliothecaire, Long> 
         bibliothecaire.setNom(entity.getNom());
         bibliothecaire.setPrenom(entity.getPrenom());
         bibliothecaire.setEmail(entity.getEmail());
-        bibliothecaire.setPassword(entity.getPassword());
+        bibliothecaire.setPassword(passwordEncoder.encode(entity.getPassword()));
         bibliothecaire.setAdresse(entity.getAdresse());
         return bibliothecaireRepository.save(bibliothecaire);
     }

@@ -5,6 +5,7 @@ import com.cs2i.libraryapi.repository.EtudiantRepository;
 import com.cs2i.libraryapi.service.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class EtudiantService implements CrudService<Etudiant, Long> {
 
     private final EtudiantRepository etudiantRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<Etudiant> findAll() {

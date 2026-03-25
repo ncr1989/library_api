@@ -26,7 +26,16 @@ public class ExemplaireController {
         return exemplaireService.findById(id);
     }
 
+    @PostMapping // added
+    @ResponseStatus(HttpStatus.CREATED)
+    public Exemplaire create(@RequestBody Exemplaire exemplaire) {
+        return exemplaireService.create(exemplaire);
+    }
 
+    @PutMapping("/{id}") // added
+    public Exemplaire update(@PathVariable Long id, @RequestBody Exemplaire updated) {
+        return exemplaireService.update(id, updated);
+    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

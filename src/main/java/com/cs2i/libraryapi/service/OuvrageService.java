@@ -53,6 +53,6 @@ public class OuvrageService implements CrudService<Ouvrage, Long> {
     }
 
     public List<Ouvrage> findByTitreContainingIgnoreCase(String titre) {
-        return List.of();
-    }
-}
+        return ouvrageRepository.findByTitreContainingIgnoreCase(titre); // fixed
+
+    }}

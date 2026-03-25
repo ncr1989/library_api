@@ -54,6 +54,6 @@ public class RevueService implements CrudService<Revue, Long> {
     }
 
     public List<Revue> findByTitreContainingIgnoreCase(String titre) {
-        return null;
+        return revueRepository.findByTitreContainingIgnoreCase(titre); // fixed
     }
 }
