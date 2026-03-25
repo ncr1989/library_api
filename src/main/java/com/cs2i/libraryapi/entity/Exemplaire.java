@@ -2,6 +2,7 @@ package com.cs2i.libraryapi.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,11 +20,13 @@ public class Exemplaire {
     private int codeBarre;
     private boolean disponible;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "emplacement_id")
+    @JsonIgnoreProperties({"categorie"})
     private Emplacement emplacement;
 
     @ManyToOne
     @JoinColumn(name = "ouvrage_id")
+    @JsonIgnoreProperties({"exemplaires", "themes", "auteurs"})
     private Ouvrage ouvrage;
 }

@@ -2,6 +2,7 @@ package com.cs2i.libraryapi.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -29,11 +30,14 @@ public class Ouvrage {
             joinColumns = @JoinColumn(name = "ouvrage_id"),
             inverseJoinColumns = @JoinColumn(name = "auteur_id")
     )
+    @JsonIgnoreProperties("ouvrages")
     private List<Auteur> auteurs;
 
     @OneToMany(mappedBy = "ouvrage")
+    @JsonIgnoreProperties("ouvrage")
     private List<Theme> themes;
 
     @OneToMany(mappedBy = "ouvrage")
+    @JsonIgnoreProperties("ouvrage")
     private List<Exemplaire> exemplaires;
 }

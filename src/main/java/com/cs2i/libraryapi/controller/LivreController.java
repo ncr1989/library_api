@@ -31,6 +31,17 @@ public class LivreController {
         return livreService.findByTitreContainingIgnoreCase(titre);
     }
 
+    @PostMapping                          // ← was missing
+    @ResponseStatus(HttpStatus.CREATED)
+    public Livre create(@RequestBody Livre livre) {
+        return livreService.create(livre);
+    }
+
+    @PutMapping("/{id}")                  // ← was missing
+    public Livre update(@PathVariable Long id, @RequestBody Livre updated) {
+        return livreService.update(id, updated);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

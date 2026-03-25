@@ -12,5 +12,5 @@ import lombok.*;
 @Table(name = "livre")
 public class Livre extends Ouvrage {
 
-    private int isbn;
+    private long isbn;
 }

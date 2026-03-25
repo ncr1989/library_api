@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "bibliothecaire")
 public class Bibliothecaire extends Utilisateur {
 
-    @Column(unique = true)
-    private int numeroMatricule;
+    @Column(unique = false)
+    private Integer numeroMatricule;
 }

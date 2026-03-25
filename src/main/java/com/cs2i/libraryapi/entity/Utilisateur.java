@@ -1,5 +1,6 @@
 package com.cs2i.libraryapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,6 +31,7 @@ public class Utilisateur {
     private String email;
 
     @NotBlank
+    @JsonIgnore
     private String password;
 
     private float caution;

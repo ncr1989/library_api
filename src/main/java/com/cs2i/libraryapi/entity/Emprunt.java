@@ -2,6 +2,7 @@ package com.cs2i.libraryapi.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -26,9 +27,11 @@ public class Emprunt {
 
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
+    @JsonIgnoreProperties({"password", "adresse"})
     private Utilisateur utilisateur;
 
     @ManyToOne
     @JoinColumn(name = "exemplaire_id")
+    @JsonIgnoreProperties({"ouvrage", "emplacement"})
     private Exemplaire exemplaire;
 }
