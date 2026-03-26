@@ -4,6 +4,7 @@ import com.cs2i.libraryapi.entity.Utilisateur;
 import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class UtilisateurService implements CrudService<Utilisateur, Long> {
 
     private final UtilisateurRepository utilisateurRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<Utilisateur> findAll() {
@@ -37,7 +39,11 @@ public class UtilisateurService implements CrudService<Utilisateur, Long> {
         utilisateur.setNom(entity.getNom());
         utilisateur.setPrenom(entity.getPrenom());
         utilisateur.setEmail(entity.getEmail());
-        utilisateur.setPassword(entity.getPassword());
+        utilisateur.setAdresse(entity.getAdresse());
+        utilisateur.setCaution(entity.getCaution());
+        if (entity.getPassword() != null && !entity.getPassword().isBlank()) {
+            utilisateur.setPassword(passwordEncoder.encode(entity.getPassword()));
+        }
         return utilisateurRepository.save(utilisateur);
     }
 

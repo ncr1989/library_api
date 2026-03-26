@@ -2,6 +2,7 @@ package com.cs2i.libraryapi.service;
 
 import com.cs2i.libraryapi.entity.Etudiant;
 import com.cs2i.libraryapi.repository.EtudiantRepository;
+import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import com.cs2i.libraryapi.service.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 public class EtudiantService implements CrudService<Etudiant, Long> {
 
     private final EtudiantRepository etudiantRepository;
+    private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -40,7 +42,11 @@ public class EtudiantService implements CrudService<Etudiant, Long> {
         etudiant.setNom(entity.getNom());
         etudiant.setPrenom(entity.getPrenom());
         etudiant.setEmail(entity.getEmail());
-        etudiant.setPassword(entity.getPassword());
+        etudiant.setAdresse(entity.getAdresse());
+        etudiant.setCaution(entity.getCaution());
+        if (entity.getPassword() != null && !entity.getPassword().isBlank()) {
+            etudiant.setPassword(passwordEncoder.encode(entity.getPassword()));
+        }
         return etudiantRepository.save(etudiant);
     }
 
@@ -49,6 +55,6 @@ public class EtudiantService implements CrudService<Etudiant, Long> {
         if (!etudiantRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Étudiant non trouvé");
         }
-        etudiantRepository.deleteById(id);
+        utilisateurRepository.deleteById(id);
     }
 }
