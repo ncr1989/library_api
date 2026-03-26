@@ -16,27 +16,27 @@ public class UtilisateurController {
 
     private final UtilisateurService utilisateurService;
 
-    // Get all users (returns all: etudiants, enseignants, bibliothecaires)
+
     @GetMapping
     public List<Utilisateur> getAll() {
         return utilisateurService.findAll();
     }
 
-    // Get one by ID
+
     @GetMapping("/{id}")
     public Utilisateur getById(@PathVariable Long id) {
         return utilisateurService.findById(id);
 
     }
 
-    // Get by email
+
     @GetMapping("/email/{email}")
     public Utilisateur getByEmail(@PathVariable String email) {
         return utilisateurService.findByEmail(email);
 
     }
 
-    // Delete any user by ID (admin only ideally)
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

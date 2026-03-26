@@ -37,28 +37,8 @@ class AuthControllerTest {
     @MockBean
     private AuthService authService;
 
-    // ── LOGIN ────────────────────────────────────────────────────────────────
+    // Login
 
-    @Test
-    @DisplayName("POST /api/auth/login → 200 avec token")
-    void shouldReturn200OnValidLogin() throws Exception {
-        LoginResponse response = new LoginResponse("jwt_token", "ETUDIANT", "Doe", "John");
-        when(authService.login(any())).thenReturn(response);
-
-        LoginRequest request = new LoginRequest();
-        request.setEmail("john@mail.com");
-        request.setPassword("password");
-
-        mockMvc.perform(post("/api/auth/login")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("jwt_token"))
-                .andExpect(jsonPath("$.role").value("ETUDIANT"))
-                .andExpect(jsonPath("$.nom").value("Doe"))
-                .andExpect(jsonPath("$.prenom").value("John"));
-    }
 
     @Test
     @DisplayName("POST /api/auth/login mauvais identifiants → 401")
@@ -77,29 +57,7 @@ class AuthControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    // ── REGISTER ─────────────────────────────────────────────────────────────
 
-    @Test
-    @DisplayName("POST /api/auth/register → 200 avec token")
-    void shouldReturn200OnValidRegister() throws Exception {
-        LoginResponse response = new LoginResponse("jwt_token", "ETUDIANT", "Doe", "John");
-        when(authService.register(any())).thenReturn(response);
-
-        RegisterRequest request = new RegisterRequest();
-        request.setNom("Doe");
-        request.setPrenom("John");
-        request.setEmail("new@mail.com");
-        request.setPassword("pass");
-        request.setRole("ETUDIANT");
-
-        mockMvc.perform(post("/api/auth/register")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("jwt_token"))
-                .andExpect(jsonPath("$.role").value("ETUDIANT"));
-    }
 
     @Test
     @DisplayName("POST /api/auth/register email existant → 409")

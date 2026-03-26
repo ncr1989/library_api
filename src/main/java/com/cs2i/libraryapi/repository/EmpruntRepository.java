@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
     List<Emprunt> findByUtilisateurId(Long utilisateurId);
+    void deleteByUtilisateurId(Long utilisateurId);
 }

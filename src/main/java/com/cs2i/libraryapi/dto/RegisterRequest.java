@@ -11,6 +11,6 @@ public class RegisterRequest {
     private String password;
     private String telephone;
     private String role;
-    private float caution;        // ← add this
-    private AdresseDto adresse;  // "ETUDIANT", "ENSEIGNANT", "BIBLIOTHECAIRE"
+    private float caution;
+    private AdresseDto adresse;  
 }

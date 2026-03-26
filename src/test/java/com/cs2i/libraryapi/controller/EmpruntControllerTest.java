@@ -61,7 +61,7 @@ class EmpruntControllerTest {
         emprunt.setExemplaire(exemplaire);
     }
 
-    // ── SECURITY ──────────────────────────────────────────────────────────────
+
 
     @Test
     @DisplayName("GET /api/emprunts sans token → 403")
@@ -70,7 +70,7 @@ class EmpruntControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    // ── GET ALL ───────────────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser
@@ -84,7 +84,7 @@ class EmpruntControllerTest {
                 .andExpect(jsonPath("$[0].enRetard").value(false));
     }
 
-    // ── GET BY ID ─────────────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser
@@ -108,7 +108,7 @@ class EmpruntControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ── GET BY UTILISATEUR ────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser
@@ -121,7 +121,7 @@ class EmpruntControllerTest {
                 .andExpect(jsonPath("$[0].id").value(1));
     }
 
-    // ── CREATE ────────────────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser
@@ -137,7 +137,7 @@ class EmpruntControllerTest {
                 .andExpect(jsonPath("$.id").value(1));
     }
 
-    // ── RETOUR ────────────────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser
@@ -164,7 +164,7 @@ class EmpruntControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // ── DELETE ────────────────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser

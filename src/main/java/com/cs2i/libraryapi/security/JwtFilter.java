@@ -31,10 +31,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        System.out.println(">>> JwtFilter: " + request.getMethod()
-                + " " + request.getRequestURI()
-                + " | Authorization: " + authHeader);
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             try {
@@ -42,7 +38,6 @@ public class JwtFilter extends OncePerRequestFilter {
                     String email = jwtUtil.extractEmail(token);
                     String role = jwtUtil.extractRole(token);
 
-                    System.out.println(">>> JWT valid for: " + email + " role: " + role);
 
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(

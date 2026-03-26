@@ -62,7 +62,6 @@ class AuthServiceTest {
         bibliothecaire.setPassword("hashed_password");
     }
 
-    // ── LOGIN ────────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("login() valide → retourne token + rôle ETUDIANT")
@@ -143,7 +142,7 @@ class AuthServiceTest {
                 .hasMessageContaining("incorrect");
     }
 
-    // ── REGISTER ─────────────────────────────────────────────────────────────
+
 
     @Test
     @DisplayName("register() → crée un Etudiant par défaut")

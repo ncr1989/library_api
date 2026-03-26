@@ -4,6 +4,7 @@ import com.cs2i.libraryapi.entity.Emprunt;
 import com.cs2i.libraryapi.entity.Exemplaire;
 import com.cs2i.libraryapi.entity.Utilisateur;
 import com.cs2i.libraryapi.repository.EmpruntRepository;
+import com.cs2i.libraryapi.repository.ExemplaireRepository;
 import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import com.cs2i.libraryapi.service.observateur.EmpruntEnRetardEvenement;
 import com.cs2i.libraryapi.service.observateur.NotificateurRetardEmprunt;
@@ -21,6 +22,7 @@ import java.util.List;
 public class EmpruntService implements CrudService<Emprunt, Long> {
 
     private final EmpruntRepository empruntRepository;
+    private final ExemplaireRepository exemplaireRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final NotificateurRetardEmprunt notificateurRetardEmprunt;
 
@@ -38,39 +40,56 @@ public class EmpruntService implements CrudService<Emprunt, Long> {
 
     @Override
     public Emprunt create(Emprunt entity) {
-        // ── Validate exemplaire ───────────────────────────────────────────
-        if (entity.getExemplaire() == null) {
+
+        if (entity.getExemplaire() == null || entity.getExemplaire().getId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Exemplaire requis");
         }
 
-        // ── Validate utilisateur ──────────────────────────────────────────
+
+        Exemplaire exemplaire = exemplaireRepository
+                .findById(entity.getExemplaire().getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Exemplaire non trouvé"));
+
+        if (!exemplaire.isDisponible()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Cet exemplaire n'est plus disponible.");
+        }
+
+
         if (entity.getUtilisateur() == null || entity.getUtilisateur().getId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Utilisateur requis");
         }
 
-        // ── Reload fresh user from DB ─────────────────────────────────────
-        Utilisateur freshUser = utilisateurRepository
+
+        Utilisateur utilisateur = utilisateurRepository
                 .findById(entity.getUtilisateur().getId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
 
-        // ── Check caution ─────────────────────────────────────────────────
+
         float cautionOuvrage = 0;
-        if (entity.getExemplaire().getOuvrage() != null) {
-            cautionOuvrage = entity.getExemplaire().getOuvrage().getCaution();
+        if (exemplaire.getOuvrage() != null) {
+            cautionOuvrage = exemplaire.getOuvrage().getCaution();
         }
 
-        if (freshUser.getCaution() < cautionOuvrage) {
+        if (utilisateur.getCaution() < cautionOuvrage) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     String.format(
                             "Caution insuffisante. Votre solde : %.2f€ — Caution requise : %.2f€",
-                            freshUser.getCaution(),
-                            cautionOuvrage
+                            utilisateur.getCaution(), cautionOuvrage
                     )
             );
         }
+        utilisateur.setCaution(utilisateur.getCaution() - cautionOuvrage);
+        utilisateurRepository.save(utilisateur);
 
+        exemplaire.setDisponible(false);
+        exemplaireRepository.save(exemplaire);
+
+        entity.setExemplaire(exemplaire);
+        entity.setUtilisateur(utilisateur);
         entity.setEnRetard(false);
         entity.setMontantAmende(0.0);
         return empruntRepository.save(entity);
@@ -100,23 +119,27 @@ public class EmpruntService implements CrudService<Emprunt, Long> {
 
         emprunt.setDateRetourEffective(LocalDate.now());
 
-        // ── Mark exemplaire as available ──────────────────────────────────
+
         Exemplaire exemplaire = emprunt.getExemplaire();
         if (exemplaire != null) {
             exemplaire.setDisponible(true);
+            exemplaireRepository.save(exemplaire);
         }
 
         Emprunt sauvegarde = empruntRepository.save(emprunt);
         verifierRetard(sauvegarde);
 
-        // ── Deduct amende from user caution ───────────────────────────────
-        if (sauvegarde.getMontantAmende() > 0 && sauvegarde.getUtilisateur() != null) {
+
+        // ── Refund caution minus amende ───────────────────────────────────
+        if (sauvegarde.getUtilisateur() != null && sauvegarde.getExemplaire() != null
+                && sauvegarde.getExemplaire().getOuvrage() != null) {
             utilisateurRepository.findById(sauvegarde.getUtilisateur().getId())
-                    .ifPresent(utilisateur -> {
-                        float nouveauSolde = utilisateur.getCaution()
-                                - (float) sauvegarde.getMontantAmende();
-                        utilisateur.setCaution(Math.max(0, nouveauSolde));
-                        utilisateurRepository.save(utilisateur);
+                    .ifPresent(u -> {
+                        float cautionOuvrage = sauvegarde.getExemplaire().getOuvrage().getCaution();
+                        float amende = (float) sauvegarde.getMontantAmende();
+                        float remboursement = Math.max(0, cautionOuvrage - amende);
+                        u.setCaution(u.getCaution() + remboursement);
+                        utilisateurRepository.save(u);
                     });
         }
 

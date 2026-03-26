@@ -5,6 +5,7 @@ import com.cs2i.libraryapi.repository.EtudiantRepository;
 import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import com.cs2i.libraryapi.service.CrudService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,13 @@ public class EtudiantService implements CrudService<Etudiant, Long> {
         if (!etudiantRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Étudiant non trouvé");
         }
-        utilisateurRepository.deleteById(id);
+        try {
+            etudiantRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cet utilisateur ne peut pas être supprimé car il est associé à des emprunts."
+            );
+        }
     }
 }

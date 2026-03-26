@@ -31,7 +31,7 @@ class SecurityRoutesTest {
     @MockBean private BibliothecaireService bibliothecaireService;
     @MockBean private JwtUtil jwtUtil;
 
-    // ── UNAUTHENTICATED ───────────────────────────────────────────────────────
+
 
     @Test
     @DisplayName("GET /api/bibliothecaires sans auth → 401")
@@ -40,7 +40,7 @@ class SecurityRoutesTest {
                 .andExpect(status().isForbidden());
     }
 
-    // ── WRONG ROLE ────────────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser(roles = "ETUDIANT")
@@ -58,7 +58,7 @@ class SecurityRoutesTest {
                 .andExpect(status().isForbidden());
     }
 
-    // ── ADMIN ACCESS ──────────────────────────────────────────────────────────
+
 
     @Test
     @WithMockUser(roles = "ADMIN")

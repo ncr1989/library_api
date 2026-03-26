@@ -4,6 +4,8 @@ import com.cs2i.libraryapi.entity.Emprunt;
 import com.cs2i.libraryapi.entity.Exemplaire;
 import com.cs2i.libraryapi.entity.Etudiant;
 import com.cs2i.libraryapi.repository.EmpruntRepository;
+import com.cs2i.libraryapi.repository.ExemplaireRepository;
+import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import com.cs2i.libraryapi.service.observateur.EmpruntEnRetardEvenement;
 import com.cs2i.libraryapi.service.observateur.NotificateurRetardEmprunt;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
+import com.cs2i.libraryapi.repository.ExemplaireRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +32,12 @@ class EmpruntServiceTest {
 
     @Mock
     private EmpruntRepository empruntRepository;
+    @Mock
+    private ExemplaireRepository exemplaireRepository;
+
+    @Mock
+    private UtilisateurRepository utilisateurRepository;
+
 
     @Mock
     private NotificateurRetardEmprunt notificateurRetardEmprunt;
@@ -41,6 +50,12 @@ class EmpruntServiceTest {
 
     @BeforeEach
     void setUp() {
+        empruntService = new EmpruntService(
+                empruntRepository,
+                exemplaireRepository,
+                utilisateurRepository,
+                notificateurRetardEmprunt
+        );
         exemplaire = new Exemplaire();
         exemplaire.setId(1L);
         exemplaire.setDisponible(true);
@@ -55,27 +70,35 @@ class EmpruntServiceTest {
         emprunt.setMontantAmende(0.0);
     }
 
-    // ── CREATE ──────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("create() → initialise enRetard=false et montantAmende=0")
     void shouldInitializeEmpruntOnCreate() {
+        Etudiant user = new Etudiant();
+        user.setId(1L);
+        user.setCaution(10.0f);
+        emprunt.setUtilisateur(user);
+
+        when(exemplaireRepository.findById(1L)).thenReturn(Optional.of(exemplaire)); // ← add
+        when(exemplaireRepository.save(any())).thenReturn(exemplaire);               // ← add
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(user));      // ← add
         when(empruntRepository.save(any())).thenReturn(emprunt);
 
         Emprunt result = empruntService.create(emprunt);
 
         assertThat(result.isEnRetard()).isFalse();
         assertThat(result.getMontantAmende()).isEqualTo(0.0);
-        verify(empruntRepository).save(emprunt);
+        verify(empruntRepository).save(any());
     }
 
-    // ── RETOUR ──────────────────────────────────────────────────────────────
+
 
     @Test
     @DisplayName("retour() → set dateRetourEffective à aujourd'hui")
     void shouldSetReturnDateOnRetour() {
         when(empruntRepository.findById(1L)).thenReturn(Optional.of(emprunt));
         when(empruntRepository.save(any())).thenReturn(emprunt);
+        when(exemplaireRepository.save(any())).thenReturn(exemplaire); // ← add
 
         Emprunt result = empruntService.retour(1L);
 
@@ -88,6 +111,7 @@ class EmpruntServiceTest {
         exemplaire.setDisponible(false);
         when(empruntRepository.findById(1L)).thenReturn(Optional.of(emprunt));
         when(empruntRepository.save(any())).thenReturn(emprunt);
+        when(exemplaireRepository.save(any())).thenReturn(exemplaire); // ← add
 
         empruntService.retour(1L);
 
@@ -115,7 +139,7 @@ class EmpruntServiceTest {
                 .hasMessageContaining("non trouvé");
     }
 
-    // ── VÉRIFICATION RETARD ─────────────────────────────────────────────────
+
 
     @Test
     @DisplayName("verifierRetard() → pas de retard si retour avant dateFinPrevue")
@@ -157,7 +181,7 @@ class EmpruntServiceTest {
         verify(notificateurRetardEmprunt, never()).notifierObservateurs(any());
     }
 
-    // ── FIND ─────────────────────────────────────────────────────────────────
+
 
     @Test
     @DisplayName("findById() emprunt inexistant → lève NOT_FOUND")
@@ -180,7 +204,7 @@ class EmpruntServiceTest {
         assertThat(result.get(0)).isEqualTo(emprunt);
     }
 
-    // ── DELETE ───────────────────────────────────────────────────────────────
+
 
     @Test
     @DisplayName("delete() emprunt inexistant → lève NOT_FOUND")

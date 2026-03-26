@@ -36,10 +36,10 @@ public class JwtUtil {
 
     public boolean isTokenValid(String token) {
         try {
-            if (token == null || token.isEmpty()) return false; // add this guard
+            if (token == null || token.isEmpty()) return false;
             getClaims(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {  // catch both
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }

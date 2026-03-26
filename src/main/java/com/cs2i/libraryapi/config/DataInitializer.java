@@ -306,8 +306,8 @@ public class DataInitializer implements CommandLineRunner {
 
         // Emprunt en retard avec amende
         Emprunt emprunt2 = new Emprunt();
-        emprunt2.setDateDebut(LocalDate.of(2024, 1, 5));
-        emprunt2.setDateFinPrevue(LocalDate.of(2024, 1, 10));
+        emprunt2.setDateDebut(LocalDate.of(2026, 3, 10));
+        emprunt2.setDateFinPrevue(LocalDate.of(2026, 3, 25));
         emprunt2.setDateRetourEffective(null);
         emprunt2.setEnRetard(true);
         emprunt2.setMontantAmende(15.5);
@@ -348,7 +348,7 @@ public class DataInitializer implements CommandLineRunner {
         emprunt5.setExemplaire(ex6);
         empruntRepository.save(emprunt5);
 
-        System.out.println("✅ Base de données initialisée avec succès !");
+
         System.out.println("   Admin:      admin@mail.com  / admin123");
         System.out.println("   Enseignant: alice@mail.com  / password123");
         System.out.println("   Étudiant:   jean@mail.com   / password123");

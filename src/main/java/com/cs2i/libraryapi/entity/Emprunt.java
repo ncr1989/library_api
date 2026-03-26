@@ -32,6 +32,6 @@ public class Emprunt {
 
     @ManyToOne
     @JoinColumn(name = "exemplaire_id")
-    @JsonIgnoreProperties({"ouvrage", "emplacement"})
+    @JsonIgnoreProperties({ "emplacement"})
     private Exemplaire exemplaire;
 }

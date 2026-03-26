@@ -47,6 +47,6 @@ public class ExemplaireService implements CrudService<Exemplaire, Long> {
         if (!exemplaireRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exemplaire non trouvé");
         }
-        ouvrageRepository.deleteById(id);
+        exemplaireRepository.deleteById(id);
     }
 }

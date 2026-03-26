@@ -4,6 +4,7 @@ import com.cs2i.libraryapi.security.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,7 +38,16 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/api/bibliothecaires/**").hasRole("ADMIN")
+                        .requestMatchers("/api/etudiants/**").hasRole("ADMIN")
+                        .requestMatchers("/api/enseignants/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/etudiants/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/enseignants/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/livres/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/revues/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/ouvrages/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/utilisateurs/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
