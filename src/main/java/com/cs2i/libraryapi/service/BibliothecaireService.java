@@ -2,6 +2,7 @@ package com.cs2i.libraryapi.service;
 
 import com.cs2i.libraryapi.entity.Bibliothecaire;
 import com.cs2i.libraryapi.repository.BibliothecaireRepository;
+import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import com.cs2i.libraryapi.service.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 public class BibliothecaireService implements CrudService<Bibliothecaire, Long> {
 
     private final BibliothecaireRepository bibliothecaireRepository;
+    private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
     public List<Bibliothecaire> findAll() {
@@ -39,7 +41,10 @@ public class BibliothecaireService implements CrudService<Bibliothecaire, Long> 
         bibliothecaire.setNom(entity.getNom());
         bibliothecaire.setPrenom(entity.getPrenom());
         bibliothecaire.setEmail(entity.getEmail());
-        bibliothecaire.setPassword(passwordEncoder.encode(entity.getPassword()));
+        bibliothecaire.setCaution(entity.getCaution());
+        if (entity.getPassword() != null && !entity.getPassword().isBlank()) {
+            bibliothecaire.setPassword(passwordEncoder.encode(entity.getPassword()));
+        }
         bibliothecaire.setAdresse(entity.getAdresse());
         return bibliothecaireRepository.save(bibliothecaire);
     }
@@ -49,6 +54,6 @@ public class BibliothecaireService implements CrudService<Bibliothecaire, Long> 
         if (!bibliothecaireRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bibliothécaire non trouvé");
         }
-        bibliothecaireRepository.deleteById(id);
+        utilisateurRepository.deleteById(id);
     }
 }

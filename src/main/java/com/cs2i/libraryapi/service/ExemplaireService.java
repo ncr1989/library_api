@@ -2,6 +2,7 @@ package com.cs2i.libraryapi.service;
 
 import com.cs2i.libraryapi.entity.Exemplaire;
 import com.cs2i.libraryapi.repository.ExemplaireRepository;
+import com.cs2i.libraryapi.repository.OuvrageRepository;
 import com.cs2i.libraryapi.service.CrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ExemplaireService implements CrudService<Exemplaire, Long> {
 
     private final ExemplaireRepository exemplaireRepository;
+    private final OuvrageRepository ouvrageRepository;
 
     @Override
     public List<Exemplaire> findAll() {
@@ -45,6 +47,6 @@ public class ExemplaireService implements CrudService<Exemplaire, Long> {
         if (!exemplaireRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exemplaire non trouvé");
         }
-        exemplaireRepository.deleteById(id);
+        ouvrageRepository.deleteById(id);
     }
 }
