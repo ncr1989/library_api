@@ -12,5 +12,5 @@ public class LoginResponse {
     private String role;
     private String nom;
     private String prenom;
-    private float caution;
+    private double caution;
 }

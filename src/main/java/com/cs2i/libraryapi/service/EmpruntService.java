@@ -68,7 +68,7 @@ public class EmpruntService implements CrudService<Emprunt, Long> {
                         HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
 
 
-        float cautionOuvrage = 0;
+        double cautionOuvrage = 0;
         if (exemplaire.getOuvrage() != null) {
             cautionOuvrage = exemplaire.getOuvrage().getCaution();
         }
@@ -129,15 +129,13 @@ public class EmpruntService implements CrudService<Emprunt, Long> {
         Emprunt sauvegarde = empruntRepository.save(emprunt);
         verifierRetard(sauvegarde);
 
-
-        // ── Refund caution minus amende ───────────────────────────────────
         if (sauvegarde.getUtilisateur() != null && sauvegarde.getExemplaire() != null
                 && sauvegarde.getExemplaire().getOuvrage() != null) {
             utilisateurRepository.findById(sauvegarde.getUtilisateur().getId())
                     .ifPresent(u -> {
-                        float cautionOuvrage = sauvegarde.getExemplaire().getOuvrage().getCaution();
-                        float amende = (float) sauvegarde.getMontantAmende();
-                        float remboursement = Math.max(0, cautionOuvrage - amende);
+                        double cautionOuvrage = sauvegarde.getExemplaire().getOuvrage().getCaution();
+                        double amende = sauvegarde.getMontantAmende();           // ← was float cast
+                        double remboursement = Math.max(0, cautionOuvrage - amende); // ← was float
                         u.setCaution(u.getCaution() + remboursement);
                         utilisateurRepository.save(u);
                     });

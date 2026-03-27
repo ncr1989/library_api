@@ -39,15 +39,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/error/**").permitAll()
+                        // Admin only
                         .requestMatchers("/api/bibliothecaires/**").hasRole("ADMIN")
-                        .requestMatchers("/api/etudiants/**").hasRole("ADMIN")
-                        .requestMatchers("/api/enseignants/**").hasRole("ADMIN")
+                        // Etudiants
                         .requestMatchers(HttpMethod.GET, "/api/etudiants/**").authenticated()
+                        .requestMatchers("/api/etudiants/**").hasRole("ADMIN")
+                        // Enseignants
                         .requestMatchers(HttpMethod.GET, "/api/enseignants/**").authenticated()
+                        .requestMatchers("/api/enseignants/**").hasRole("ADMIN")
+                        // Suppression des ouvrages(admin)
                         .requestMatchers(HttpMethod.DELETE, "/api/livres/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/revues/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/ouvrages/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/utilisateurs/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -69,6 +69,7 @@ public class DataInitializer implements CommandLineRunner {
         enseignant1.setPassword(passwordEncoder.encode("password123"));
         enseignant1.setTelephone("0611111111");
         enseignant1.setAdresse(adresse2);
+        enseignant1.setCaution(65.0F);
         enseignant1.setNomDepartement("Informatique");
         utilisateurRepository.save(enseignant1);
 
@@ -90,6 +91,7 @@ public class DataInitializer implements CommandLineRunner {
         etudiant1.setPassword(passwordEncoder.encode("password123"));
         etudiant1.setTelephone("0633333333");
         etudiant1.setAdresse(adresse1);
+        enseignant1.setCaution(70.0);
         etudiant1.setNumeroEtudiant(20240001);
         etudiant1.setAnneeUniversitaire(LocalDate.of(2024, 9, 1));
         utilisateurRepository.save(etudiant1);

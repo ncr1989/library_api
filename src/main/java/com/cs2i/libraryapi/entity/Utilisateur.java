@@ -34,7 +34,7 @@ public class Utilisateur {
     @JsonIgnore
     private String password;
 
-    private float caution;
+    private double caution;
     private String telephone;
 
     @ManyToOne

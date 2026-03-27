@@ -21,7 +21,7 @@ public class Ouvrage {
     private Long id;
 
     private String titre;
-    private float caution;
+    private double caution;
     private LocalDate anneePublication;
 
     @ManyToMany

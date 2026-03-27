@@ -3,7 +3,9 @@ package com.cs2i.libraryapi.service;
 import com.cs2i.libraryapi.entity.Livre;
 import com.cs2i.libraryapi.repository.LivreRepository;
 import com.cs2i.libraryapi.service.CrudService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,11 +48,20 @@ public class LivreService implements CrudService<Livre, Long> {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!livreRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livre non trouvé");
         }
-        livreRepository.deleteById(id);
+        try {
+            livreRepository.deleteById(id);
+            livreRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Ce livre ne peut pas être supprimé car il possède des exemplaires liés à des emprunts."
+            );
+        }
     }
 
     public List<Livre> findByTitreContainingIgnoreCase(String titre) {

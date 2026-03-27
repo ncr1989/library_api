@@ -4,7 +4,9 @@ import com.cs2i.libraryapi.entity.Exemplaire;
 import com.cs2i.libraryapi.repository.ExemplaireRepository;
 import com.cs2i.libraryapi.repository.OuvrageRepository;
 import com.cs2i.libraryapi.service.CrudService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,11 +44,22 @@ public class ExemplaireService implements CrudService<Exemplaire, Long> {
         return exemplaireRepository.save(exemplaire);
     }
 
+
+
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!exemplaireRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exemplaire non trouvé");
         }
-        exemplaireRepository.deleteById(id);
+        try {
+            exemplaireRepository.deleteById(id);
+            exemplaireRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cet exemplaire ne peut pas être supprimé car il est associé à des emprunts."
+            );
+        }
     }
 }

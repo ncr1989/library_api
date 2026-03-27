@@ -3,7 +3,9 @@ package com.cs2i.libraryapi.service;
 import com.cs2i.libraryapi.entity.Revue;
 import com.cs2i.libraryapi.repository.RevueRepository;
 import com.cs2i.libraryapi.service.CrudService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,11 +48,20 @@ public class RevueService implements CrudService<Revue, Long> {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!revueRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Revue non trouvée");
         }
-        revueRepository.deleteById(id);
+        try {
+            revueRepository.deleteById(id);
+            revueRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cette revue ne peut pas être supprimée car elle possède des exemplaires liés à des emprunts."
+            );
+        }
     }
 
     public List<Revue> findByTitreContainingIgnoreCase(String titre) {
