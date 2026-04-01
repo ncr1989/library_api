@@ -43,3 +43,10 @@ jobs:
         run: chmod +x mvnw
       - name: Compile project
         run: ./mvnw clean compile
+      - name: Run Tests
+        run: ./mvnw clean test
+      - name: Upload test report
+        uses: actions/upload-artificat@v4
+        with:
+          name: test-results
+          path: target/surefire-reports
