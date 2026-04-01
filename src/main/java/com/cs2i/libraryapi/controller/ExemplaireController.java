@@ -26,7 +26,7 @@ public class ExemplaireController {
         return exemplaireService.findById(id);
     }
 
-    @PostMapping // added
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Exemplaire create(@RequestBody Exemplaire exemplaire) {
         return exemplaireService.create(exemplaire);

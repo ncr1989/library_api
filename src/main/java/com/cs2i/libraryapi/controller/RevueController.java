@@ -1,5 +1,6 @@
 package com.cs2i.libraryapi.controller;
 
+import com.cs2i.libraryapi.entity.Livre;
 import com.cs2i.libraryapi.entity.Revue;
 import com.cs2i.libraryapi.service.RevueService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,12 @@ public class RevueController {
     @GetMapping("/search")
     public List<Revue> searchByTitre(@RequestParam String titre) {
         return revueService.findByTitreContainingIgnoreCase(titre);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Revue create(@RequestBody Revue revue) {
+        return revueService.create(revue);
     }
 
     @DeleteMapping("/{id}")

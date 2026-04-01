@@ -31,13 +31,13 @@ public class LivreController {
         return livreService.findByTitreContainingIgnoreCase(titre);
     }
 
-    @PostMapping                          // ← was missing
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Livre create(@RequestBody Livre livre) {
         return livreService.create(livre);
     }
 
-    @PutMapping("/{id}")                  // ← was missing
+    @PutMapping("/{id}")
     public Livre update(@PathVariable Long id, @RequestBody Livre updated) {
         return livreService.update(id, updated);
     }
