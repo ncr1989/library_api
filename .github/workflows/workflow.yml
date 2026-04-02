@@ -65,4 +65,45 @@ jobs:
           with:
            name: test-results
            path: target/surefire-reports
+  swagger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Give execute persmission de Maven
+        run: chmod +x mvnw
+      - name: Start Spring Boot app
+        run: |
+          java -jar target/*.jar &
+          echo $! > app.pid
+      - name: Wait for app to be ready
+        run: |
+          for i in {1..30}; do
+            curl -s http://localhost:8080/actuator/health && break
+            echo "Waiting..."
+            sleep 2
+          done
+      - name: Export OpenAPI spec
+        run: |
+          curl -s http://localhost:8080/v3/api-docs \
+            -o openapi.json
+      - name: Upload OpenAPI spec as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-spec
+          path: openapi.json
 
