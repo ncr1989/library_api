@@ -98,10 +98,6 @@ jobs:
         run: chmod +x mvnw
 
       - name: Run tests
-        env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/library_db
-          SPRING_DATASOURCE_USERNAME: root
-          SPRING_DATASOURCE_PASSWORD: root
         run: ./mvnw clean test
 
       - name: Upload test report
