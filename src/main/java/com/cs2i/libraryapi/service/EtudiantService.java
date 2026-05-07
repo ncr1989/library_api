@@ -1,6 +1,8 @@
 package com.cs2i.libraryapi.service;
 
+import com.cs2i.libraryapi.entity.Adresse;
 import com.cs2i.libraryapi.entity.Etudiant;
+import com.cs2i.libraryapi.repository.AdresseRepository;
 import com.cs2i.libraryapi.repository.EtudiantRepository;
 import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import com.cs2i.libraryapi.service.CrudService;
@@ -20,6 +22,7 @@ public class EtudiantService implements CrudService<Etudiant, Long> {
     private final EtudiantRepository etudiantRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdresseRepository adresseRepository;
 
     @Override
     public List<Etudiant> findAll() {
@@ -43,11 +46,27 @@ public class EtudiantService implements CrudService<Etudiant, Long> {
         etudiant.setNom(entity.getNom());
         etudiant.setPrenom(entity.getPrenom());
         etudiant.setEmail(entity.getEmail());
-        etudiant.setAdresse(entity.getAdresse());
+        etudiant.setTelephone(entity.getTelephone());
         etudiant.setCaution(entity.getCaution());
+
         if (entity.getPassword() != null && !entity.getPassword().isBlank()) {
             etudiant.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
+
+        if (entity.getAdresse() != null) {
+            if (etudiant.getAdresse() != null) {
+                etudiant.getAdresse().setNumero(entity.getAdresse().getNumero());
+                etudiant.getAdresse().setRue(entity.getAdresse().getRue());
+                etudiant.getAdresse().setVille(entity.getAdresse().getVille());
+                etudiant.getAdresse().setCodePostal(entity.getAdresse().getCodePostal());
+                adresseRepository.save(etudiant.getAdresse());
+            } else {
+                Adresse adresse = entity.getAdresse();
+                adresseRepository.save(adresse);
+                etudiant.setAdresse(adresse);
+            }
+        }
+
         return etudiantRepository.save(etudiant);
     }
 

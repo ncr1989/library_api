@@ -43,9 +43,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/bibliothecaires/**").hasRole("ADMIN")
                         // Etudiants
                         .requestMatchers(HttpMethod.GET, "/api/etudiants/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/enseignants/**").authenticated()
                         .requestMatchers("/api/etudiants/**").hasRole("ADMIN")
                         // Enseignants
                         .requestMatchers(HttpMethod.GET, "/api/enseignants/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/enseignants/**").authenticated()
                         .requestMatchers("/api/enseignants/**").hasRole("ADMIN")
                         // Suppression des ouvrages(admin)
                         .requestMatchers(HttpMethod.DELETE, "/api/livres/**").hasRole("ADMIN")

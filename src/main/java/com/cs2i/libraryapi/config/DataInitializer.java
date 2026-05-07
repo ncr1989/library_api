@@ -104,6 +104,7 @@ public class DataInitializer implements CommandLineRunner {
         etudiant2.setTelephone("0644444444");
         etudiant2.setAdresse(adresse2);
         etudiant2.setNumeroEtudiant(20240002);
+        etudiant2.setCaution(65.0);
         etudiant2.setAnneeUniversitaire(LocalDate.of(2024, 9, 1));
         utilisateurRepository.save(etudiant2);
 
@@ -312,7 +313,7 @@ public class DataInitializer implements CommandLineRunner {
         emprunt2.setDateFinPrevue(LocalDate.of(2026, 3, 25));
         emprunt2.setDateRetourEffective(null);
         emprunt2.setEnRetard(true);
-        emprunt2.setMontantAmende(15.5);
+        emprunt2.setMontantAmende(0.0);
         emprunt2.setUtilisateur(etudiant2);
         emprunt2.setExemplaire(ex3);
         empruntRepository.save(emprunt2);

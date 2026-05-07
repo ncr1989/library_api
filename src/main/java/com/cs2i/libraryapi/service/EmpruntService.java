@@ -116,9 +116,7 @@ public class EmpruntService implements CrudService<Emprunt, Long> {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Cet emprunt est déjà retourné");
         }
-
         emprunt.setDateRetourEffective(LocalDate.now());
-
 
         Exemplaire exemplaire = emprunt.getExemplaire();
         if (exemplaire != null) {
@@ -129,19 +127,24 @@ public class EmpruntService implements CrudService<Emprunt, Long> {
         Emprunt sauvegarde = empruntRepository.save(emprunt);
         verifierRetard(sauvegarde);
 
-        if (sauvegarde.getUtilisateur() != null && sauvegarde.getExemplaire() != null
-                && sauvegarde.getExemplaire().getOuvrage() != null) {
-            utilisateurRepository.findById(sauvegarde.getUtilisateur().getId())
+        Emprunt empruntMisAJour = empruntRepository.findById(sauvegarde.getId())
+                .orElse(sauvegarde);
+
+        if (empruntMisAJour.getUtilisateur() != null && empruntMisAJour.getExemplaire() != null
+                && empruntMisAJour.getExemplaire().getOuvrage() != null) {
+            utilisateurRepository.findById(empruntMisAJour.getUtilisateur().getId())
                     .ifPresent(u -> {
-                        double cautionOuvrage = sauvegarde.getExemplaire().getOuvrage().getCaution();
-                        double amende = sauvegarde.getMontantAmende();           // ← was float cast
-                        double remboursement = Math.max(0, cautionOuvrage - amende); // ← was float
-                        u.setCaution(u.getCaution() + remboursement);
+                        double cautionOuvrage = empruntMisAJour.getExemplaire().getOuvrage().getCaution();
+                        double amende = empruntMisAJour.getMontantAmende();
+                        double nouvellesCaution = u.getCaution() + cautionOuvrage - amende;
+
+                        u.setCaution(Math.max(0,nouvellesCaution));
+                        System.out.println("caution après: " + u.getCaution());
                         utilisateurRepository.save(u);
                     });
         }
 
-        return sauvegarde;
+        return empruntMisAJour;
     }
 
     @Override

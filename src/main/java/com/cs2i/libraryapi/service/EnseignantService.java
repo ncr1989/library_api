@@ -1,6 +1,8 @@
 package com.cs2i.libraryapi.service;
 
+import com.cs2i.libraryapi.entity.Adresse;
 import com.cs2i.libraryapi.entity.Enseignant;
+import com.cs2i.libraryapi.repository.AdresseRepository;
 import com.cs2i.libraryapi.repository.EnseignantRepository;
 import com.cs2i.libraryapi.repository.UtilisateurRepository;
 import com.cs2i.libraryapi.service.CrudService;
@@ -20,6 +22,7 @@ public class EnseignantService implements CrudService<Enseignant, Long> {
     private final EnseignantRepository enseignantRepository;
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdresseRepository adresseRepository;
 
     @Override
     public List<Enseignant> findAll() {
@@ -43,11 +46,27 @@ public class EnseignantService implements CrudService<Enseignant, Long> {
         enseignant.setNom(entity.getNom());
         enseignant.setPrenom(entity.getPrenom());
         enseignant.setEmail(entity.getEmail());
-        enseignant.setAdresse(entity.getAdresse());
+        enseignant.setTelephone(entity.getTelephone());
         enseignant.setCaution(entity.getCaution());
+
         if (entity.getPassword() != null && !entity.getPassword().isBlank()) {
             enseignant.setPassword(passwordEncoder.encode(entity.getPassword()));
         }
+
+        if (entity.getAdresse() != null) {
+            if (enseignant.getAdresse() != null) {
+                enseignant.getAdresse().setNumero(entity.getAdresse().getNumero());
+                enseignant.getAdresse().setRue(entity.getAdresse().getRue());
+                enseignant.getAdresse().setVille(entity.getAdresse().getVille());
+                enseignant.getAdresse().setCodePostal(entity.getAdresse().getCodePostal());
+                adresseRepository.save(enseignant.getAdresse());
+            } else {
+                Adresse adresse = entity.getAdresse();
+                adresseRepository.save(adresse);
+                enseignant.setAdresse(adresse);
+            }
+        }
+
         return enseignantRepository.save(enseignant);
     }
 
